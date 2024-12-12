@@ -87,8 +87,10 @@ def main(filepath, output_path):
         # }
 
         # Export File file bytes:
-        export_path = output_path.joinpath(file.relative_path)
-        export_path.write_bytes(file.file_bytes)
+        export_path = output_path.joinpath(file.vpath)
+        with file.stream as file_stream:
+            file_bytes = file_stream.read()
+        export_path.write_bytes(file_bytes)
 
 if __name__ == '__main__':
     main(r"tests/inputs/specimen.tiff", MY_OUTPUT_PATH)
@@ -109,8 +111,10 @@ def main(filepath, output_path):
         match file_or_exception:
             case Success(file):
                 print(file.metadata)
-                export_path = output_path.joinpath(file.relative_path)
-                export_path.write_bytes(file.file_bytes)
+                export_path = output_path.joinpath(file.vpath)
+                with file.stream as file_stream:
+                    file_bytes = file_stream.read()
+                export_path.write_bytes(file_bytes)
             case Failure(exception):
                 # Handle Exception ...
                 raise exception
